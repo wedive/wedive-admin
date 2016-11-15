@@ -1,0 +1,62 @@
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="registration-partial">
+    <template>
+        <style>
+
+            :root {
+                margin-top: 32px;
+            }
+            .lv-cj {
+                @apply(--layout-vertical);
+                @apply(--layout-center-justified);
+            }
+
+            .lh-cj {
+                @apply(--layout-horizontal);
+                @apply(--layout-center-justified);
+                padding-top: 16px;
+            }
+
+            .lv-cj span {
+                font-weight: 300;
+                font-size: 20px;
+                line-height: 24px;
+                text-align: center;
+                letter-spacing: .1px;
+                padding-bottom: 16px;
+            }
+
+            .lv-cj paper-card {
+                min-width: 330px;
+            }
+
+
+        </style>
+        <div class="lv-cj">
+            <span>Wedive advisor login</span>
+            <paper-card elevation="1">
+                <div class="card-content">
+                    <form is="apigility-auth-form" error-message="{{errorAuthForm}}">
+                        <span class="error">{{errorAuthForm}}</span>
+                        <paper-input name="username" label="User name" ></paper-input>
+                        <paper-input type="password" name="password" label="Password" ></paper-input>
+                        <div class="lh-cj">
+                            <paper-button submit-button>Login</paper-button>
+                        </div>
+                    </form>
+                </div>
+            </paper-card>
+        </div>
+    </template>
+    <script>
+        (function() {
+            'use strict';
+
+            Polymer({
+                is: 'registration-partial'
+            });
+        })();
+    </script>
+
+</dom-module>

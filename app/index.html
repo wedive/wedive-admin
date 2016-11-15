@@ -3,49 +3,34 @@
 <head>
     <meta charset="utf-8">
     <link rel="import" href="/elements/elements.html">
-    <link rel="stylesheet" href="/styles/style.css">
     <script src="/bower_components/webcomponentsjs/webcomponents.js"></script>
 </head>
 <body>
 
 <span id="browser-sync-binding"></span>
 <template is="dom-bind" id="app">
-
-    <iron-meta type="apigility" key="root-url" value="{{cnf.base-url}}"></iron-meta>
     <iron-meta type="apigility" key="base-url" value="{{cnf.base-url}}"></iron-meta>
     <iron-meta type="apigility" key="content-type" value="application/json"></iron-meta>
     <iron-meta type="apigility" key="headers" value='{"Accept": "application/json"}'></iron-meta>
+
     <apigility-auth-service
             auth="{{auth}}"
             identity-object="{{identityObject}}"
             oauth-service="oauth"
             identity-service="rpc/identity"
-            client-id="strapieno-admin" >
+            client-id="{{cnf.client_id}}" >
     </apigility-auth-service>
+
     <!-- Login section -->
     <div hidden="{{auth}}" class="layout horizontal center-justified height100">
-        <div class="layout vertical center-justified">
-            <span class="text-align-center">Wedive advisor login</span>
-            <paper-card id="login-box" elevation="1">
-                <div class="card-content">
-                    <form is="apigility-auth-form" error-message="{{errorAuthForm}}">
-                        <span class="error">{{errorAuthForm}}</span>
-                        <paper-input name="username" label="User name" ></paper-input>
-                        <paper-input type="password" name="password" label="Password" ></paper-input>
-                        <div class="layout horizontal end-justified">
-                            <paper-button submit-button>Login</paper-button>
-                        </div>
-                    </form>
-                </div>
-            </paper-card>
-        </div>
+        <registration-partial></registration-partial>
     </div>
     <paper-scroll-header-panel hidden="{{!auth}}" fixed>
         <paper-toolbar>
             <paper-icon-button icon="menu" on-tap="toggleMenu"></paper-icon-button>
-            <div class="flex"><h3>Strapieno admin</h3></div>
+            <div class="flex"><h3>Wedive admin</h3></div>
             <paper-icon-button id="refresh-button" icon="refresh" on-tap="refresh"></paper-icon-button>
-            <strapieno-user-avatar id="logged-avatar" on-tap="toggleRightMenu" user="[[identityObject]]" height="38" width="38" sizing="cover" placeholder="/images/avatar35x35.png"></strapieno-user-avatar>
+            <entity-image entity="[[identityObject]]" image-field="avatar" id="logged-avatar" on-tap="toggleRightMenu" height="38" width="38" sizing="cover" placeholder="/images/avatar35x35.png"></entity-image>
         </paper-toolbar>
         <paper-drawer-panel id="rightPanel" drawer-width="64px" force-narrow right-drawer>
             <paper-scroll-header-panel drawer>

@@ -7,8 +7,8 @@
     "paper-elements": "PolymerElements/paper-elements#^1.0.6",
     "polymer-apigility": "git@github.com:visa4/polymer-apigility.git#develop",
     "page": "page.js#~1.7.1",
-    "paper-datatable": "git@github.com:visa4/paper-datatable.git#master",
-    "google-map": "GoogleWebComponents/google-map#~1.1.10"
+    "google-map": "GoogleWebComponents/google-map#~1.1.10",
+    "iron-table": "Saulis/iron-data-table#~1.0.4"
   },
   "devDependencies": {
     "web-component-tester": "*",

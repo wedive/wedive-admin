@@ -1,32 +1,72 @@
-<link rel="import" href="../../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../../../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../../../../bower_components/polymer-apigility/rest/form/rest-form.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../../bower_components/polymer-apigility/rest/form/rest-form.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../dropdown-menu/dropdown-menu-input.html">
-<link rel="import" href="../../user-avatar/user-avatar.html">
+<link rel="import" href="../../entity-image/entity-image.html">
+<link rel="import" href="../place-gallery/partial/crud.html">
 
 <dom-module id="strapieno-place-put">
     <template>
-        <overlay-background src="{{entity.cover}}" gradient-angle="270" color="rgba( 255, 255, 255, 0 )" opacity="-0.30" gradient-color="rgba( 250, 250, 250, 1 )" gradient-opacity="0.50"></overlay-background>
-        <div class="layout horizontal end-justified">
-            <a href="/place/{{placeId}}/girl">
-                <paper-button>Girls</paper-button>
-            </a>
-            <a href="/place/{{placeId}}/review">
-                <paper-button>Reviews</paper-button>
-            </a>
-        </div>
-        <form
-            id="placeCover"
-            is="apigility-rest-form"
-            content-type="multipart/form-data"
-            auth="[[auth]]">
-            <apigility-resource resource-name="rest/nightclub" identifier="[[placeId]]" has-identifier i-am-entity>
-                <apigility-resource resource-name="cover">
+        <style>
+            .lh-ej {
+                @apply(--layout-horizontal);
+                @apply(--layout-end-justified);
+            }
+
+            .lh {
+                @apply(--layout-horizontal);
+            }
+
+            #place-gallery {
+                padding-left: 108px;
+                min-height: 150px;
+            }
+
+            #place-gallery form {
+               padding-right: 16px;
+            }
+
+            #placeCover {
+                padding-left: 24px;
+            }
+
+            place-gallery-crud {
+                margin-left: 16px;;
+            }
+        </style>
+        <div id="place-gallery" class="lh">
+            <form
+                    id="placeGallery"
+                    is="apigility-rest-form"
+                    content-type="multipart/form-data"
+                    auth="[[auth]]">
+                <apigility-resource resource-name="rest/place" identifier="[[placeId]]" has-identifier>
+                    <apigility-resource resource-name="gallery">
+                    </apigility-resource>
                 </apigility-resource>
-            </apigility-resource>
-            <file-input label="Upload file" name="blob" auto-send></file-input>
-        </form>
+                <file-input label="Upload gallery" name="blob" auto-send></file-input>
+            </form>
+            <template is="dom-repeat" items="{{entity.collection}}">
+                <place-gallery-crud entity="{{item}}" sizing="cover" place-id={{entity.id}}  auth="[[auth]]"></place-gallery-crud>
+            </template>
+        </div>
+        <div class="lh">
+            <entity-image entity="{{entity}}" image-field="cover" sizing="cover"></entity-image>
+            <form
+                    id="placeCover"
+                    is="apigility-rest-form"
+                    content-type="multipart/form-data"
+                    auth="[[auth]]">
+                <apigility-resource resource-name="rest/place" identifier="[[placeId]]" has-identifier i-am-entity>
+                    <apigility-resource resource-name="cover">
+                    </apigility-resource>
+                </apigility-resource>
+                <file-input label="Upload cover" name="blob" auto-send></file-input>
+            </form>
+        </div>
         <form id="placePut"
             is="apigility-rest-form"
             identify="{{placeId}}"
@@ -34,34 +74,12 @@
             update-method="PATCH"
             auth="{{auth}}"
             auto-load="{{loadPlace}}">
-            <apigility-resource resource-name="rest/nightclub" identifier="[[placeId]]" has-identifier></apigility-resource>
-            <paper-input name="name" label="Name"></paper-input>
-            <paper-input name="fax_number" label="Fax number"></paper-input>
-            <paper-input name="telephone" label="Telephone"></paper-input>
-            <dropdown-menu-input  name="type" label="Type">
-                <paper-menu class="dropdown-content" class="flex hspace" attr-for-selected="value">
-                    <paper-item value="NightClub">Night Club</paper-item>
-                    <paper-item value="ClubPrive">Club Prive</paper-item>
-                </paper-menu>
-            </dropdown-menu-input>
-            <place-input
-                api-key="[[apiKey]]"
-                street="{{editiStreet}}"
-                postal-code="{{postalCode}}"
-                city="{{city}}"
-                region="{{region}}"
-                country="{{country}}"
-                marker="{{entity.geo_coordinate}}"
-                latitude="{{latitude}}"
-                longitude="{{longitude}}">
-                <paper-input name="postal_address[street_address]" label="Address" value="{{editiStreet}}"></paper-input>
-                <paper-input name="postal_address[postal_code]" label="Postal code" value="{{postalCode}}"></paper-input>
-                <paper-input name="postal_address[address_locality]" label="City" value="{{city}}"></paper-input>
-                <paper-input name="postal_address[address_region]" label="Region" value="{{region}}"></paper-input>
-                <paper-input name="postal_address[address_country]" label="Country" value="{{country}}"></paper-input>
-                <input type="hidden" name="geo_coordinate[longitude]" value="{{longitude}}">
-                <input type="hidden" name="geo_coordinate[latitude]" value="{{latitude}}">
-            </place-input>
+            <apigility-resource resource-name="rest/place" identifier="[[placeId]]" has-identifier></apigility-resource>
+            <paper-input name="name" label="Nome"></paper-input>
+            <paper-input name="max_depth" label="Profodità"></paper-input>
+            <paper-input name="visibility" label="Visibilità"></paper-input>
+            <paper-input name="current" label="Corrente"></paper-input>
+            <paper-textarea name="description" label="Descrizione"></paper-textarea>
             <div class="layout horizontal end-justified">
                 <paper-button submit-button raised>SAVE</paper-button>
             </div>

@@ -1,6 +1,6 @@
-<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
 
-<dom-module id="strapieno-user-avatar">
+<dom-module id="entity-image">
   <style>
     iron-image {
       display: inline-block;
@@ -17,7 +17,7 @@
             width="[[width]]"
             height="[[height]]"
             sizing="[[sizing]]"
-            src="{{url}}"
+            src="[[url]]"
             placeholder="[[placeholder]]"
             preload
             fade>
@@ -28,12 +28,16 @@
       'use strict';
 
       Polymer({
-        is: 'strapieno-user-avatar',
+        is: 'entity-image',
 
         properties: {
-          user: {
+          entity: {
             type: Object,
-            value: function() { return {}; }
+            value: {}
+          },
+
+          imageField: {
+            type: String,
           },
 
           url: {
@@ -48,29 +52,38 @@
 
           width: {
             type: Number,
+            notify: true,
             value: 84
           },
 
           sizing: {
             type: String,
+            notify: true,
             value: null
           },
 
           height: {
             type: Number,
+            notify: true,
             value: 84
           }
         },
 
         observers: [
-          'userAvatarChanged(user.avatar)'
+          'entityChanged(entity)'
         ],
 
-        userAvatarChanged: function (value) {
-        //  console.log('CAMBIA STA CAZZO DI FOTO', value);
-         if(value) {
-           this._setUrl(value);
-         }
+        entityChanged: function (entity) {
+
+          if ((entity !== null && entity !== undefined)
+              && !(Object.keys(entity).length === 0)
+              && (entity.constructor === Object)
+              && this.imageField
+              && entity[this.imageField])
+          {
+            console.log(entity[this.imageField]);
+            this.$.image.src = entity[this.imageField];
+          }
         }
       });
     })();

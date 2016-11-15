@@ -1,12 +1,19 @@
-<link rel="import" href="../../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../../../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../../../../bower_components/polymer-apigility/rest/form/rest-form.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../../bower_components/polymer-apigility/rest/form/rest-form.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../dropdown-menu/dropdown-menu-input.html">
-<link rel="import" href="../../user-avatar/user-avatar.html">
 
 <dom-module id="strapieno-user-post">
     <template>
+        <style>
+            .lh-ej {
+                @apply(--layout-horizontal);
+                @apply(--layout-end-justified);
+            }
+        </style>
         <form
             id="userAddForm"
             is="apigility-rest-form"
@@ -18,17 +25,23 @@
             <paper-input name="email" label="Email"></paper-input>
             <paper-input name="first_name" label="First name"></paper-input>
             <paper-input name="last_name" label="Last name"></paper-input>
-            <paper-input name="last_name" label="Last name"></paper-input>
-                <paper-input name="password" type="password" label="Password"></paper-input>
+            <paper-textarea name="comment" label="Commento"></paper-textarea>
+            <paper-input name="password" type="password" label="Password"></paper-input>
             <paper-input name="confirm_password" type="password" label="Confirm passord"></paper-input>
             <paper-input name="birth_date" type="date" label="Birth date"></paper-input>
+            <dropdown-menu-input name="type" label="Tipologia">
+                <paper-menu class="dropdown-content" class="flex hspace" attr-for-selected="value">
+                    <paper-item value="diver">Subacquo</paper-item>
+                    <paper-item value="diverOwner">Proprietario di un diving</paper-item>
+                </paper-menu>
+            </dropdown-menu-input>
             <dropdown-menu-input name="role_id" label="Role">
                 <paper-menu class="dropdown-content" class="flex hspace" attr-for-selected="value">
                     <paper-item value="guest">Guest</paper-item>
                     <paper-item value="god">God</paper-item>
                 </paper-menu>
             </dropdown-menu-input>
-            <div class="layout horizontal end-justified">
+            <div class="lh-ej">
                 <paper-button submit-button raised>SAVE</paper-button>
             </div>
             </paper-menu>

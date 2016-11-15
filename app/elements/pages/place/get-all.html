@@ -1,49 +1,94 @@
-<link rel="import" href="../../../../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../../../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../../../bower_components/paper-datatable/paper-datatable.html">
-<link rel="import" href="../../../../bower_components/polymer-apigility/rest/rest-api-client.html">
-<link rel="import" href="../../../../bower_components/polymer-apigility/rest/rest-paginator.html">
+<link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-datatable/paper-datatable.html">
+<link rel="import" href="../../../bower_components/polymer-apigility/rest/rest-api-client.html">
+<link rel="import" href="../../../bower_components/polymer-apigility/rest/rest-paginator.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
 
 <dom-module id="strapieno-place-get-all">
     <template>
-        <div class="layout horizontal end-justified">
+        <style>
+            .lh-ej {
+                @apply(--layout-horizontal);
+                @apply(--layout-end-justified);
+            }
+
+           ::content iron-data-table {
+               height: 700px;
+           }
+
+           iron-data-table ::content div#header {
+               margin-bottom: 16px;
+           }
+
+            ::content data-table-row {
+                height: 60px;
+            }
+
+            ::content data-table-cell {
+                height: 60px;
+            }
+
+            ::content iron-image {
+                border-radius: 50%;
+            }
+        </style>
+        <div class="lh-ej">
             <a href="/place/add">
                 <paper-fab icon="add" title="heart"></paper-fab>
             </a>
         </div>
         <apigility-rest-api-client
                 auth="{{auth}}"
-                collection-name="nightclubs"
-                collection="{{nightclubs}}"
-                page-count="{{nightclubPages}}"
-                page-size="[[nightclubPageSize]]"
-                page="[[nightclubPage]]"
+                collection-name="places"
+                collection="{{places}}"
+                page-count="{{placePages}}"
+                page-size="[[placePageSize]]"
+                page="[[placePage]]"
                 auth="{{auth}}"
                 auto-load="{{loadCollection}}">
-            <apigility-resource resource-name="rest/nightclub"></apigility-resource>
+            <apigility-resource resource-name="rest/place"></apigility-resource>
         </apigility-rest-api-client>
         <template is="dom-if" if="{{hasCollection}}">
-            <paper-datatable data="{{nightclubs}}">
-                <paper-datatable-column header="Name" property="name" type="String" sortable></paper-datatable-column>
-                <paper-datatable-column header="Type" property="type" type="String" sortable></paper-datatable-column>
-                <paper-datatable-column header="Created" property="date_created" type="date" sortable></paper-datatable-column>
-                <paper-datatable-column header="Last modify" property="date_created" type="date" sortable></paper-datatable-column>
-                <paper-datatable-column property="id" type="String">
+            <iron-data-table id="grid" items="[[places]]">
+                <data-table-column width="50px"  flex="0" class="cover">
+                    <template><iron-image
+                            width="50"
+                            height="50"
+                            sizing="cover"
+                            src="[[item.cover]]"
+                            placeholder="/images/avatar35x35.png"
+                            preload
+                            fade>
+                    </iron-image>
+                        </template>
+                </data-table-column>
+                <data-table-column name="Nome">
+                    <template>[[item.name]]</template>
+                </data-table-column>
+                <data-table-column name="Data creazione">
+                    <template>[[item.date_created]]</template>
+                </data-table-column>
+                <data-table-column name="Data ultima modifica">
+                    <template>[[item.date_modified]]</template>
+                </data-table-column>
+                <data-table-column>
                     <template>
-                        <a href="/place/{{value}}">
-                            <paper-icon-button icon="datatable:editable"></paper-icon-button>
+                        <a href="/place/[[item.id]]">
+                            <paper-icon-button icon="icons:create"></paper-icon-button>
                         </a>
                     </template>
-                </paper-datatable-column>
-            </paper-datatable>
-            <rest-pagination
-                    page-count="{{nightclubPages}}"
-                    page="{{nightclubPage}}"
-                    page-size="{{nightclubPageSize}}">
-            </rest-pagination>
+                </data-table-column>
+            </iron-data-table>
+            <apigility-rest-paginator
+                    page-count="{{placePages}}"
+                    page="{{placePage}}"
+                    page-size="{{placePageSize}}">
+            </apigility-rest-paginator>
         </template>
         <template is="dom-if" if="{{!hasCollection}}">
-           no place
+           Non ci sono posti
         </template>
     </template>
     <script>
@@ -66,11 +111,11 @@
                 },
 
                 observers: [
-                    '_collectionsChanged(nightclubs)'
+                    '_collectionsChanged(places)'
                 ],
 
-                _collectionsChanged: function(nightclubs){
-                    if (Array.isArray(nightclubs) && nightclubs.length > 0) {
+                _collectionsChanged: function(places){
+                    if (Array.isArray(places) && places.length > 0) {
                         this.hasCollection = true;
                         return;
                     }

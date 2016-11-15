@@ -6,9 +6,8 @@
 
   // TODO move into another file
   app.cnf = {
-    "client_id": "strapieno-admin",
-    "base-url-rest" : "http://127.0.0.69/rest",
-    "base-url" : "http://127.0.0.69",
+    "client_id": "open-wedive",
+    "base-url" : "http://127.0.0.72",
     "google-map-api-key": "AIzaSyAqDcu1vu9rj_Fj-3qCxFKbwdozZFGZOOE"
   };
 
