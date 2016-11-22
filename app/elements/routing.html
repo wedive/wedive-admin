@@ -81,15 +81,15 @@
       app.notifyPath('routeParams', ctx);
 
       var page = document.getElementById('addPlacePage');
-      var form = Polymer.dom(page).node.$.placeUpsert;
+      var form = Polymer.dom(page).node.$.placePost ;
 
-      var listenerPostNightClub =  function(e) {
-        this.page.show(window.location.pathname.replace("add", e.detail.restClient.entity.id));
+      var listenerPostPlace =  function(e) {
+        this.page.show(window.location.pathname.replace("add", e.detail.response.id));
       }.bind(this);
 
       form.$.restClient.addEventListener(
               'rest-post-response',
-              listenerPostNightClub
+              listenerPostPlace
       );
     });
 

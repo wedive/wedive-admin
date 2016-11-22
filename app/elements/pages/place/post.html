@@ -1,47 +1,58 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../../bower_components/polymer-apigility/rest/form/rest-form.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/google-map/google-map.html">
+<link rel="import" href="../../../bower_components/google-map/google-map-marker.html">
 <link rel="import" href="../../dropdown-menu/dropdown-menu-input.html">
+<link rel="import" href="../../google-map/google-map-autocomplete.html">
 
-<dom-module id="strapieno-place-post">
+<dom-module id="place-post">
     <template>
-        <form id="placeUpsert"
+        <style>
+            .lh-ej {
+                @apply(--layout-horizontal);
+                @apply(--layout-end-justified);
+            }
+
+            google-map {
+                height: 400px;
+            }
+
+            google-map ::content paper-input {
+                padding-left: 24px;
+            }
+
+        </style>
+        <form id="placePost"
               is="apigility-rest-form"
               entity="{{entity}}"
-              update-method="PATCH"
               auth="{{auth}}">
-            <apigility-resource resource-name="rest/nightclub"></apigility-resource>
-            <paper-input name="name" label="Name"></paper-input>
-            <paper-input name="fax_number" label="Fax number"></paper-input>
-            <paper-input name="telephone" label="Telephone"></paper-input>
-            <paper-input name="user_id" label="User id"></paper-input>
-            <dropdown-menu-input  name="type" label="Type">
-                <paper-menu class="dropdown-content" class="flex hspace" attr-for-selected="value">
-                    <paper-item value="NightClub">Night Club</paper-item>
-                    <paper-item value="ClubPrive">Club Prive</paper-item>
-                </paper-menu>
-            </dropdown-menu-input>
-
-            <place-input
-                    api-key="[[apiKey]]"
-                    street="{{editiStreet}}"
-                    postal-code="{{postalCode}}"
-                    city="{{city}}"
-                    region="{{region}}"
-                    country="{{country}}"
-                    marker="{{entity.geo_coordinate}}"
-                    latitude="{{latitude}}"
-                    longitude="{{longitude}}"
-            >
-                <paper-input name="postal_address[street_address]" label="Address" value="{{editiStreet}}"></paper-input>
-                <paper-input name="postal_address[postal_code]" label="Postal code" value="{{postalCode}}"></paper-input>
-                <paper-input name="postal_address[address_locality]" label="City" value="{{city}}"></paper-input>
-                <paper-input name="postal_address[address_region]" label="Region" value="{{region}}"></paper-input>
-                <paper-input name="postal_address[address_country]" label="Country" value="{{country}}"></paper-input>
-                <input type="hidden" name="geo_coordinate[longitude]" value="{{longitude}}">
-                <input type="hidden" name="geo_coordinate[latitude]" value="{{latitude}}">
-            </place-input>
+            <apigility-resource resource-name="rest/place" identifier="[[placeId]]" has-identifier></apigility-resource>
+            <paper-input name="name" label="Nome"></paper-input>
+            <paper-input name="max_depth" label="Profodità"></paper-input>
+            <paper-input name="visibility" label="Visibilità"></paper-input>
+            <paper-input name="current" label="Corrente"></paper-input>
+            <paper-textarea name="description" label="Descrizione"></paper-textarea>
+            <template is="dom-if" if="{{apiKey}}">
+                <google-map-autocomplete class="autocomple-map" api-key="{{apiKey}}"></google-map-autocomplete>
+                <google-map
+                        map="{{map}}"
+                        id="map"
+                        api-key="{{apiKey}}"
+                        zoom="13"
+                        max-zoom="17"
+                        min-zoom="12"
+                        latitude="{{latMap}}"
+                        longitude="{{longMap}}"
+                        disable-default-ui>
+                    <google-map-marker map="[[map]]" latitude="{{marker.latitude}}" longitude="{{marker.longitude}}" draggable="true"></google-map-marker>
+                    <input type="hidden" name="geo_coordinate[longitude]" value="{{marker.longitude}}">
+                    <input type="hidden" name="geo_coordinate[latitude]" value="{{marker.latitude}}">
+                </google-map>
+            </template>
             <div class="layout horizontal end-justified">
                 <paper-button submit-button raised>SAVE</paper-button>
             </div>
@@ -52,10 +63,21 @@
             'use strict';
 
             Polymer({
-                is: 'strapieno-place-post',
+                is: 'place-post',
+
+                properties: {
+                    marker: {
+                        type: Object,
+                        readOnly: true,
+                        notify: true,
+                        value: {},
+                    }
+                },
 
                 listeners: {
-                    'rest-post-response': 'userNotificationListener'
+                    'rest-post-response': 'userNotificationListener',
+                    'api-load': 'loadMap',
+                     'place_loaded': 'loadPlace'
                 },
 
                 userNotificationListener: function (event) {
@@ -65,6 +87,25 @@
                     );
                 },
 
+                loadMap: function (e) {
+
+                   if (e.target.parentElement.latitude && e.target.parentElement.longitude) {
+                       this.__setMarker(e.target.parentElement.latitude, e.target.parentElement.longitude);
+                   }
+                },
+
+                loadPlace: function (e) {
+                    this.__setMarker(e.target.latitude, e.target.longitude);
+                    this.latMap = e.target.latitude;
+                    this.longMap = e.target.longitude;
+                },
+
+                __setMarker: function (latitude, longitude) {
+                    var marker = {};
+                    marker.latitude = latitude;
+                    marker.longitude = longitude;
+                    this._setMarker(marker);
+                }
             });
         })();
     </script>

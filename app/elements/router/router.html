@@ -5,6 +5,7 @@
 <link rel="import" href="../pages/user/put.html">
 
 <link rel="import" href="../pages/place/get-all.html">
+<link rel="import" href="../pages/place/post.html">
 <link rel="import" href="../pages/place/put.html">
 
 <dom-module id="strapieno-router">
@@ -57,12 +58,10 @@
         </strapieno-place-get-all>
       </section>
       <section data-route="place">
-        <strapieno-place-put
-                auth="[[auth]]"
-                place-id="[[placeId]]"
-                load-place="{{loadPlace}}"
-                api-key="{{mapsApiKey}}">
-        </strapieno-place-put>
+        <place-put auth="[[auth]]" api-key="{{mapsApiKey}}" place-id="[[placeId]]" load-place="{{loadPlace}}"></place-put>
+      </section>
+      <section data-route="place-add">
+       <place-post id="addPlacePage" auth="[[auth]]" api-key="{{mapsApiKey}}"></place-post>
       </section>
     </iron-pages>
   </template>

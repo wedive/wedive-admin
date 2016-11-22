@@ -4,11 +4,14 @@
 <link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../../bower_components/polymer-apigility/rest/form/rest-form.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/google-map/google-map.html">
+<link rel="import" href="../../../bower_components/google-map/google-map-marker.html">
 <link rel="import" href="../../dropdown-menu/dropdown-menu-input.html">
+<link rel="import" href="../../google-map/google-map-autocomplete.html">
 <link rel="import" href="../../entity-image/entity-image.html">
 <link rel="import" href="../place-gallery/partial/crud.html">
 
-<dom-module id="strapieno-place-put">
+<dom-module id="place-put">
     <template>
         <style>
             .lh-ej {
@@ -18,6 +21,14 @@
 
             .lh {
                 @apply(--layout-horizontal);
+            }
+
+            google-map {
+                height: 400px;
+            }
+
+            google-map ::content paper-input {
+                padding-left: 24px;
             }
 
             #place-gallery {
@@ -80,6 +91,23 @@
             <paper-input name="visibility" label="Visibilità"></paper-input>
             <paper-input name="current" label="Corrente"></paper-input>
             <paper-textarea name="description" label="Descrizione"></paper-textarea>
+            <template is="dom-if" if="{{apiKey}}">
+                <google-map-autocomplete id="autocomplite" api-key="{{apiKey}}" latitude="antity.geo_coordinate.latitude}}" longitude="{{entity.geo_coordinate.longitude}}" ></google-map-autocomplete>
+                <google-map
+                        map="{{map}}"
+                        id="map"
+                        api-key="{{apiKey}}"
+                        zoom="13"
+                        max-zoom="17"
+                        min-zoom="4"
+                        latitude="{{latMap}}"
+                        longitude="{{longMap}}"
+                        disable-default-ui>
+                    <google-map-marker map="[[map]]" latitude="{{entity.geo_coordinate.latitude}}" longitude="{{entity.geo_coordinate.longitude}}" draggable="true"></google-map-marker>
+                    <input type="hidden" name="geo_coordinate[longitude]" value="{{entity.geo_coordinate.longitude}}">
+                    <input type="hidden" name="geo_coordinate[latitude]" value="{{entity.geo_coordinate.latitude}}">
+                </google-map>
+            </template>
             <div class="layout horizontal end-justified">
                 <paper-button submit-button raised>SAVE</paper-button>
             </div>
@@ -90,7 +118,22 @@
             'use strict';
 
             Polymer({
-                is: 'strapieno-place-put',
+                is: 'place-put',
+
+                observers: [
+                    'entityChanged(entity)'
+                ],
+
+                listeners: {
+                    'place_loaded': 'loadAutocomplete'
+                },
+
+                entityChanged: function (entity) {
+                  if (entity && entity.geo_coordinate.latitude && entity.geo_coordinate.longitude) {
+                      this.latMap = entity.geo_coordinate.latitude;
+                      this.longMap = entity.geo_coordinate.longitude;
+                  }
+                },
 
                 ready : function () {
                   this.$.placeCover.addEventListener('rest-form-response', this.coverResponseHandler.bind(this))
@@ -98,10 +141,18 @@
 
                 coverResponseHandler : function (event) {
                     this.$.placePut.$.restClient.get();
-                }
+                },
+
+                loadAutocomplete: function (e) {
+
+                    this.latMap = e.target.latitude;
+                    this.longMap = e.target.longitude;
+
+                    this.entity.geo_coordinate.latitude = e.target.latitude;
+                    this.entity.geo_coordinate.longitude = e.target.longitude;
+                    this.notifyPath('entity.geo_coordinate');
+                },
             });
-
-
         })();
     </script>
 

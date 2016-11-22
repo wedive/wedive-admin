@@ -8,7 +8,7 @@
   app.cnf = {
     "client_id": "open-wedive",
     "base-url" : "http://127.0.0.72",
-    "google-map-api-key": "AIzaSyAqDcu1vu9rj_Fj-3qCxFKbwdozZFGZOOE"
+    "google-map-api-key": "AIzaSyAacdLcjhptOcr-sfCFfAnxirCk18GDxXQ"
   };
 
   /**
@@ -78,10 +78,10 @@
       case 'nightclub' :
         switch (event.detail.method.toUpperCase()) {
           case 'POST' :
-            toast.text = 'Nightclub creation complete';
+            toast.text = 'Place creation complete';
             break;
           case 'PATCH' :
-            toast.text = 'Nightclub update complete';
+            toast.text = 'Place update complete';
             break;
           default :
             console.warn('Wrong config notification', event)
