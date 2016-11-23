@@ -47,6 +47,12 @@
             place-gallery-crud {
                 margin-left: 16px;;
             }
+
+            paper-multicheckbox {
+                display: block;
+                padding-top: 16px;
+                padding-bottom: 16px;
+            }
         </style>
         <div id="place-gallery" class="lh">
             <form
@@ -91,6 +97,11 @@
             <paper-input name="visibility" label="Visibilità"></paper-input>
             <paper-input name="current" label="Corrente"></paper-input>
             <paper-textarea name="description" label="Descrizione"></paper-textarea>
+            <paper-multicheckbox name="badges">
+                <template is="dom-repeat" items="[[badges]]" as="badge">
+                    <paper-checkbox class="flex" value="[[badge.value]]" name="badges[]">[[badge.label]]</paper-checkbox>
+                </template>
+            </paper-multicheckbox>
             <template is="dom-if" if="{{apiKey}}">
                 <google-map-autocomplete id="autocomplite" api-key="{{apiKey}}" latitude="antity.geo_coordinate.latitude}}" longitude="{{entity.geo_coordinate.longitude}}" ></google-map-autocomplete>
                 <google-map
@@ -119,6 +130,17 @@
 
             Polymer({
                 is: 'place-put',
+
+                properties: {
+                    badges : {
+                        value: [
+                            {"value": "cave", "label" : "grotta"},
+                            {"value": "wall", "label" : "parete"},
+                            {"value": "fish", "label" : "pesci"},
+                            {"value": "wreck", "label" : "relitto"}
+                        ]
+                    }
+                },
 
                 observers: [
                     'entityChanged(entity)'

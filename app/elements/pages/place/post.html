@@ -1,3 +1,4 @@
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
@@ -8,10 +9,16 @@
 <link rel="import" href="../../../bower_components/google-map/google-map-marker.html">
 <link rel="import" href="../../dropdown-menu/dropdown-menu-input.html">
 <link rel="import" href="../../google-map/google-map-autocomplete.html">
+<link rel="import" href="../../paper-multicheckbox/paper-multicheckbox.html">
 
 <dom-module id="place-post">
     <template>
         <style>
+
+            :root {
+                --paper-checkbox-label-color: --secondary-text-color;
+            }
+
             .lh-ej {
                 @apply(--layout-horizontal);
                 @apply(--layout-end-justified);
@@ -25,6 +32,12 @@
                 padding-left: 24px;
             }
 
+            paper-multicheckbox {
+                display: block;
+                padding-top: 16px;
+                padding-bottom: 16px;
+            }
+
         </style>
         <form id="placePost"
               is="apigility-rest-form"
@@ -36,6 +49,11 @@
             <paper-input name="visibility" label="Visibilità"></paper-input>
             <paper-input name="current" label="Corrente"></paper-input>
             <paper-textarea name="description" label="Descrizione"></paper-textarea>
+            <paper-multicheckbox name="badges">
+                <template is="dom-repeat" items="[[badges]]" as="badge">
+                    <paper-checkbox class="flex" value="[[badge.value]]" name="badges[]">[[badge.label]]</paper-checkbox>
+                </template>
+            </paper-multicheckbox>
             <template is="dom-if" if="{{apiKey}}">
                 <google-map-autocomplete class="autocomple-map" api-key="{{apiKey}}"></google-map-autocomplete>
                 <google-map
@@ -44,7 +62,7 @@
                         api-key="{{apiKey}}"
                         zoom="13"
                         max-zoom="17"
-                        min-zoom="12"
+                        min-zoom="9"
                         latitude="{{latMap}}"
                         longitude="{{longMap}}"
                         disable-default-ui>
@@ -71,12 +89,21 @@
                         readOnly: true,
                         notify: true,
                         value: {},
+                    },
+
+                    badges : {
+                        value: [
+                            {"value": "cave", "label" : "grotta"},
+                            {"value": "wall", "label" : "parete"},
+                            {"value": "fish", "label" : "pesci"},
+                            {"value": "wreck", "label" : "relitto"}
+                        ]
                     }
                 },
 
                 listeners: {
-                    'rest-post-response': 'userNotificationListener',
-                    'api-load': 'loadMap',
+                     'rest-post-response': 'userNotificationListener',
+                     'api-load': 'loadMap',
                      'place_loaded': 'loadPlace'
                 },
 
